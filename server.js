@@ -12,12 +12,12 @@ argparser.addArgument("--date", {
     defaultValue: false,
     nargs: 0,
 });
-argparser.addArgument("--listen", {
-    defaultValue: 8000,
-});
 argparser.addArgument("--trustproxy", {
     defaultValue: false,
     nargs: 0,
+});
+argparser.addArgument("--listen", {
+    defaultValue: 8000,
 });
 argparser.addArgument("--servername", {
     defaultValue: "update.core-os.net",
@@ -57,7 +57,7 @@ args.channel.forEach((item) => {
     channel.hash = channelItem[3];
     channel.sha256 = channelItem[4];
     updater.channels[channelName] = channel;
-    log("Found channel " + channelName + " version " + channel.version)
+    log("Channel " + channelName + " version " + channel.version)
 });
 
 function noUpdateResponse(app) {
