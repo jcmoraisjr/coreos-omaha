@@ -6,6 +6,20 @@ Partial [Omaha](https://coreos.com/products/coreupdate/docs/latest/update-protoc
 
 #Usage
 
+Configure CoreOS update server to point to CoreOS Omaha server:
+
+    # /etc/coreos/update.conf 
+    GROUP=stable
+    SERVER=http://omaha.my-server.com:8000
+
+Cloud-init:
+
+    #cloud-config
+    coreos:
+      update:
+        group: stable
+        server: http://omaha.my-server.com:8000
+
 The following arguments are mandatory:
 
 * `--urlbase=<URL>` Base URL where CoreOS images should be downloaded
@@ -18,9 +32,9 @@ Optional arguments:
 * `--listen=<port>` Port to listen, default is `8000`
 * `--trustproxy` Use when behind a proxy which defines `X-Forwarded-For` header
 
-#Channel declaration
+#Channels
 
-Channels are declared once per `--channel` argument. Use as much `--channel` arguments as the number of channels.
+Use as much `--channel` arguments as the number of channels.
 
 The argument has the following syntax:
 
@@ -34,7 +48,7 @@ Where:
 * `sha1-hash` is the base64 encode of the sha1 hash: `openssl sha -sha1 -binary update.gz | base64`
 * `sha256-hash` is the base64 encode of the sha256 hash: `openssl sha -sha256 -binary update.gz | base64`
 
-Download original image from `https://update.release.core-os.net/amd64-usr/<VERSION>/update.gz`.
+Download original images from `https://update.release.core-os.net/amd64-usr/<VERSION>/update.gz`.
 
 #Configure
 
@@ -49,7 +63,7 @@ This systemd unit has the most common configurations. Change `update.my-server.c
     ExecStartPre=-/usr/bin/docker rm coreos-omaha
     ExecStart=/usr/bin/docker run \
      --name coreos-omaha \
-     -p 80:8000 \
+     -p 8000:8000 \
      quay.io/jcmoraisjr/coreos-omaha:latest \
       --channel=alpha,1192.0.0,254754856,EVjNyHkg2EtSUSyf477ExtjP/Lo=,VJiWOBmoFECZk1znmglW6HrknpcQ9LJyb+meaimBjjg= \
       --channel=beta,1185.1.0,247835613,v333LDdL31kVpWeyv+/PtK7fysg=,zE55qgObyunDfNuF0Ny2zwq9hNz98umv7d43F2YY37A= \
