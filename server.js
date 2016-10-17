@@ -178,9 +178,9 @@ function writeXML(res, converter) {
 }
 
 function handleError(res) {
-    res.statusCode = 500;
+    res.statusCode = 400;
     res.setHeader("Content-Type", "text/plain");
-    res.write("Internal Server Error\n");
+    res.write("Bad request\n");
 }
 
 function checkUpdateRequest(app) {
