@@ -24,11 +24,21 @@ Channels are declared once per `--channel` argument. Use as much `--channel` arg
 
 The argument has the following syntax:
 
-    --channel=<name>,<version>,<size>,<package-hash>,<installation-sha256>
+    --channel=<name>,<version>,<size>,<sha1-hash>,<sha256-hash>
+
+Where:
+
+* `name` is the name of the channel, like `beta` or `stable`
+* `version` is the complete version number, like `1122.2.0` or `1192.0.0`
+* `size` is the file size in bytes
+* `sha1-hash` is the base64 encode of the sha1 hash: `openssl sha -sha1 -binary update.gz | base64`
+* `sha256-hash` is the base64 encode of the sha256 hash: `openssl sha -sha256 -binary update.gz | base64`
+
+Download original image from `https://update.release.core-os.net/amd64-usr/<VERSION>/update.gz`.
 
 #Configure
 
-This systemd unit has the most common configurations. Valid alpha, beta and stable channels from oct/2016. Change `update.my-server.com` below to the server where you want your CoreOS hosts should download images. Images from `https://update.release.core-os.net/amd64-usr/<VERSION>/update.gz`.
+This systemd unit has the most common configurations. Change `update.my-server.com` below to the server where you want CoreOS hosts download the images.
 
     [Unit]
     Description=CoreOS Omaha
