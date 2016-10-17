@@ -43,20 +43,16 @@ function logApp(app, data) {
     log(app.$.remote + " | " + app.$.machineid + " | " + app.$.track + " | " + data)
 }
 
-const updater = {
-    "server": args.servername,
-    "urlbase": args.urlbase,
-    "channels":{},
-};
+var channels = {};
 args.channel.forEach((item) => {
-    var channelItem = item.split(",");
     var channel = {};
+    var channelItem = item.split(",");
     channelName = channelItem[0];
     channel.version = channelItem[1];
     channel.size = channelItem[2];
     channel.hash = channelItem[3];
     channel.sha256 = channelItem[4];
-    updater.channels[channelName] = channel;
+    channels[channelName] = channel;
     log("Channel " + channelName + " version " + channel.version)
 });
 
@@ -65,7 +61,7 @@ function noUpdateResponse(app) {
         "response":{
             "$":{
                 "protocol":"3.0",
-                "server":updater.server
+                "server":args.servername
             },
             "daystart":{
                 "$":{
@@ -88,12 +84,12 @@ function noUpdateResponse(app) {
 }
 
 function downloadResponse(app) {
-    var channel = updater.channels[app.$.track];
+    var channel = channels[app.$.track];
     return {
         "response":{
             "$":{
                 "protocol":"3.0",
-                "server":updater.server
+                "server":args.servername
             },
             "daystart":{
                 "$":{
@@ -112,7 +108,7 @@ function downloadResponse(app) {
                     "urls":{
                         "url":{
                             "$":{
-                                "codebase":updater.urlbase + "/" + channel.version + "/"
+                                "codebase":args.urlbase + "/" + channel.version + "/"
                             }
                         }
                     },
@@ -153,7 +149,7 @@ function okResponse(app) {
         "response":{
             "$":{
                 "protocol":"3.0",
-                "server":updater.server
+                "server":args.servername
             },
             "daystart":{
                 "$":{
@@ -184,7 +180,7 @@ function handleError(res) {
 }
 
 function checkUpdateRequest(app) {
-    var version = updater.channels[app.$.track].version;
+    var version = channels[app.$.track].version;
     if (app.$.version != version) {
         logApp(app, "Update version from " + app.$.version + " to " + version);
         return downloadResponse(app);
