@@ -199,6 +199,11 @@ function handleRequest(app, res) {
         writeXML(res, () => {
             return okResponse(app);
         });
+    } else if (app.ping) {
+        logApp(app, "Ping");
+        writeXML(res, () => {
+            return okResponse(app);
+        });
     } else {
         handleError(res);
     }
