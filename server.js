@@ -173,10 +173,13 @@ function writeXML(res, converter) {
     res.write(xmlResponse);
 }
 
-function handleError(res) {
+function handleError(res, text) {
     res.statusCode = 400;
     res.setHeader("Content-Type", "text/plain");
-    res.write("Bad request\n");
+    if (!text) {
+        text = "Bad request";
+    }
+    res.write(text + "\n");
 }
 
 function checkUpdateRequest(app) {
@@ -205,6 +208,7 @@ function handleRequest(app, res) {
             return okResponse(app);
         });
     } else {
+        logApp(app, "Invalid params");
         handleError(res);
     }
 }
@@ -224,9 +228,15 @@ const server = http.createServer((req, res) => {
                     } else {
                         app.$.remote = req.connection.remoteAddress;
                     }
-                    handleRequest(app, res);
+                    var requestChannel = app.$.track;
+                    if (channels[requestChannel]) {
+                        handleRequest(app, res);
+                    } else {
+                        logApp(app, "Channel does not exist: " + requestChannel);
+                        handleError(res, "Channel does not exist: " + requestChannel);
+                    }
                 } else {
-                    log(err);
+                    log("Invalid XML");
                     handleError(res);
                 }
             } catch(e) {
@@ -239,7 +249,7 @@ const server = http.createServer((req, res) => {
 });
 
 process.on("SIGTERM", () => {
-  process.exit();
+    process.exit();
 });
 
 server.listen(args.listen);
